@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, RefreshCw, Sunrise, Moon } from 'lucide-react';
 
 const DateTimeCalendarApp = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   // 曜日の配列
   const weekDays = ['日', '月', '火', '水', '木', '金', '土'];
@@ -101,12 +101,22 @@ const DateTimeCalendarApp = () => {
 
   // 時刻の更新（毎秒）
   useEffect(() => {
+    setCurrentTime(new Date());
+    
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
+
+  if (!currentTime) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+        <div className="text-white text-xl">読み込み中...</div>
+      </div>
+    );
+  }
 
   // カレンダーの日付を生成
   const generateCalendarDays = (targetDate: Date) => {
