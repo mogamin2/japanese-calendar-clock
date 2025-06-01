@@ -9,7 +9,7 @@ const DateTimeCalendarApp = () => {
   const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
   // 2025年の日本の祝日
-  const holidays = {
+  const holidays: { [key: string]: string } = {
     '2025-1-1': '元日',
     '2025-1-13': '成人の日',
     '2025-2-11': '建国記念の日',
@@ -32,7 +32,7 @@ const DateTimeCalendarApp = () => {
   };
 
   // 六曜を計算
-  const getRokuyo = (date) => {
+  const getRokuyo = (date: Date) => {
     const rokuyoNames = ['大安', '赤口', '先勝', '友引', '先負', '仏滅'];
     // 簡易的な計算（実際の六曜計算は旧暦が必要で複雑）
     const seed = date.getDate() + date.getMonth() + 1;
@@ -40,7 +40,7 @@ const DateTimeCalendarApp = () => {
   };
 
   // 月齢を計算（簡易版）
-  const getMoonAge = (date) => {
+  const getMoonAge = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -64,14 +64,14 @@ const DateTimeCalendarApp = () => {
   };
 
   // 年間の経過を計算
-  const getYearProgress = (date) => {
+  const getYearProgress = (date: Date) => {
     const year = date.getFullYear();
     const start = new Date(year, 0, 1);
     const end = new Date(year + 1, 0, 1);
     const now = date;
     
-    const total = end - start;
-    const elapsed = now - start;
+    const total = end.getTime() - start.getTime();
+    const elapsed = now.getTime() - start.getTime();
     const percentage = (elapsed / total) * 100;
     const dayOfYear = Math.floor(elapsed / (1000 * 60 * 60 * 24)) + 1;
     const daysInYear = Math.floor(total / (1000 * 60 * 60 * 24));
@@ -81,7 +81,7 @@ const DateTimeCalendarApp = () => {
   };
 
   // 和暦を計算
-  const getJapaneseEra = (date) => {
+  const getJapaneseEra = (date: Date) => {
     const year = date.getFullYear();
     if (year >= 2019) {
       return `令和${year - 2018}年`;
@@ -92,7 +92,7 @@ const DateTimeCalendarApp = () => {
   };
 
   // 日付をフォーマット
-  const formatDateKey = (date) => {
+  const formatDateKey = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -109,7 +109,7 @@ const DateTimeCalendarApp = () => {
   }, []);
 
   // カレンダーの日付を生成
-  const generateCalendarDays = (targetDate) => {
+  const generateCalendarDays = (targetDate: Date) => {
     const year = targetDate.getFullYear();
     const month = targetDate.getMonth();
     const firstDay = new Date(year, month, 1);
@@ -117,11 +117,11 @@ const DateTimeCalendarApp = () => {
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
-    const days = [];
+    const days: Date[] = [];
     const current = new Date(startDate);
 
     while (current <= lastDay || current.getDay() !== 0) {
-      days.push(new Date(current));
+      days.push(new Date(current.getTime()));
       current.setDate(current.getDate() + 1);
     }
 
@@ -136,7 +136,7 @@ const DateTimeCalendarApp = () => {
   const yearProgress = getYearProgress(currentTime);
 
   // カレンダーコンポーネント
-  const CalendarGrid = ({ days, targetMonth, isMain = true }) => {
+  const CalendarGrid = ({ days, targetMonth, isMain = true }: { days: Date[], targetMonth: Date, isMain?: boolean }) => {
     const month = targetMonth.getMonth();
     const isCurrentMonth = currentTime.getMonth() === month && currentTime.getFullYear() === targetMonth.getFullYear();
 
